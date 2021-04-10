@@ -36,6 +36,25 @@ namespace Songs.API
                 options.InvalidModelStateResponseFactory = InvalidModelStateResponseFactory.ProduceErrorResponse;
             });
 
+            services
+                .AddCors(options =>
+                {
+                    options.AddPolicy("AllowAll",
+                        builder => builder
+                        .AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        );
+
+                    options.AddPolicy("signalr",
+                        builder => builder
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+
+                        .AllowCredentials()
+                        .SetIsOriginAllowed(hostName => true));
+                });
+
             services.AddDbContext<AppDbContext>(options =>
             {
 				options.UseSqlite(Configuration.GetConnectionString("sqlite"));
@@ -46,6 +65,8 @@ namespace Songs.API
             services.AddScoped<ISongService, SongService>();
 
             services.AddAutoMapper(typeof(Startup));
+
+            services.AddMvc();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -58,6 +79,8 @@ namespace Songs.API
             app.UseCustomSwagger();
 
             app.UseRouting();
+
+            app.UseCors("AllowAll");
 
             app.UseAuthorization();
 

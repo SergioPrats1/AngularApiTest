@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-//using Microsoft.AspNet.WebApi.Cors;
+using Microsoft.AspNetCore.Cors;
 using Songs.API.Domain.Models;
 using Songs.API.Domain.Services;
 using Songs.API.Resources;
@@ -27,7 +27,7 @@ namespace Songs.API.Controllers
         /// Lists all Songs
         /// </summary>
         /// <returns>List os songs.</returns>
-        //[EnableCors]
+        [EnableCors("AllowAll")]
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<SongResource>), 200)]
         public async Task<IEnumerable<SongResource>> ListAsync()

@@ -5,7 +5,6 @@ using Microsoft.Extensions.Caching.Memory;
 using Songs.API.Domain.Models;
 using Songs.API.Domain.Repositories;
 using Songs.API.Domain.Services;
-using Songs.API.Domain.Services.Communication;
 using Songs.API.Infrastructure;
 
 namespace Songs.API.Services
