@@ -13,5 +13,6 @@ li span{
 }
 
 li a{
-	background: peru
+	background: white;
+	color: peru;
 }

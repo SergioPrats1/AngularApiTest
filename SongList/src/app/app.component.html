@@ -38,14 +38,20 @@
   </tr>
   </table>
   <p>Loading: {{loading}}</p>
-  <p>errorHttp: {{errorHttp}}</p>
-  <p>dummyText: {{dummyText}}</p>
-  <p>First song: {{song.title}}</p>
+  <p [ngStyle]="{'color': errorHttpColor() }">errorHttp: {{errorHttp}}</p>
+  <p *ngIf="errorHttp ;">Error: {{error}}</p>
 </div>
 
 
-<ul>
-  <li *ngFor="let song of songs" >
-   <a (click)="showSong(song)">  {{song.title}} </a>
-  </li>
-</ul>
+<table>
+  <tr>
+    <th>Title</th>
+	<th>Artist</th>
+	<th>Year</th>
+  </tr>
+  <tr *ngFor="let song of songs" >
+    <td style="background:peru"><a (click)="showSong(song)" > {{song.title}} </a></td>
+	<td>{{song.artist}}</td>
+	<td>{{song.year}}</td>
+  </tr>
+</table>
