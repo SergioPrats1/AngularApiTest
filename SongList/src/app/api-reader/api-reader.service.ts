@@ -16,8 +16,8 @@ export class ApiReaderService {
 
   constructor(private http: HttpClient) { }
   
-  configUrl = 'http://localhost:5000/api/songs';	  
-  //configUrl = 'assets/Songs.json';
+  //configUrl = 'http://localhost:5000/api/songs';	  
+  configUrl = 'assets/Songs.json';
   
   getSongs() {   
   

@@ -33,25 +33,8 @@
   />
   </th>
   <th>
-  <H1>Here is the Song list</H1>
   </th>
   </tr>
   </table>
-  <p>Loading: {{loading}}</p>
-  <p [ngStyle]="{'color': errorHttpColor() }">errorHttp: {{errorHttp}}</p>
-  <p *ngIf="errorHttp ;">Error: {{error}}</p>
+  <app-my-song-list></app-my-song-list>
 </div>
-
-
-<table>
-  <tr>
-    <th>Title</th>
-	<th>Artist</th>
-	<th>Year</th>
-  </tr>
-  <tr *ngFor="let song of songs" >
-    <td style="background:peru"><a (click)="showSong(song)" > {{song.title}} </a></td>
-	<td>{{song.artist}}</td>
-	<td>{{song.year}}</td>
-  </tr>
-</table>
