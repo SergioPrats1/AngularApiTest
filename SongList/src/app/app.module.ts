@@ -1,11 +1,11 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-//import { HttpModule } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { MySongListComponent } from './my-song-list/my-song-list.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {MatTableModule} from '@angular/material/table'; 
 
 @NgModule({
   declarations: [
@@ -15,8 +15,10 @@ import { MySongListComponent } from './my-song-list/my-song-list.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
-	HttpClientModule
-	//HttpModule
+	HttpClientModule,
+	BrowserAnimationsModule,
+	MatTableModule
+	
   ],
   providers: [],
   bootstrap: [AppComponent]

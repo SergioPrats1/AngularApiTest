@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {MatTableModule} from '@angular/material/table'; 
 import { Song, ApiReaderService } from '../api-reader/api-reader.service';
 
 @Component({
@@ -13,6 +14,7 @@ export class MySongListComponent implements OnInit {
   errorHttp: Boolean;
   error: any;
   song:Song;
+  displayedColumns: string[] = ['title', 'artist', 'year'];
   
   constructor(private apiReaderService: ApiReaderService){
 	this.loading=false;
@@ -23,6 +25,7 @@ export class MySongListComponent implements OnInit {
     this.loading = true;
 	this.showSongs();
 	this.loading = false;
+	this.songs = [];
   }
 
   showSongs() { 

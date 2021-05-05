@@ -2,15 +2,21 @@
 <p *ngIf="loading;">Loading: {{loading}}</p>
 <p *ngIf="errorHttp; " [ngStyle]="{'color': errorHttpColor() }">errorHttp: {{errorHttp}}</p>
 <p *ngIf="errorHttp;">Error: {{error}}</p>
-<table>
-  <tr>
-    <th>Title</th>
-	<th>Artist</th>
-	<th>Year</th>
-  </tr>
-  <tr *ngFor="let song of songs" >
-    <td style="background:peru"><a (click)="showSong(song)" > {{song.title}} </a></td>
-	<td>{{song.artist}}</td>
-	<td>{{song.year}}</td>
-  </tr>
+
+<table mat-table [dataSource]="songs" class="mat-elevation-z8">
+  <ng-container matColumnDef="title">
+    <th mat-header-cell *matHeaderCellDef> Title </th>
+    <td mat-cell *matCellDef="let element"> {{element.title}} </td>
+  </ng-container>
+  <ng-container matColumnDef="artist">
+    <th mat-header-cell *matHeaderCellDef> Artist </th>
+    <td mat-cell *matCellDef="let element"> {{element.artist}} </td>
+  </ng-container>
+    <ng-container matColumnDef="year">
+    <th mat-header-cell *matHeaderCellDef> Year </th>
+    <td mat-cell *matCellDef="let element"> {{element.year}} </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 </table>
