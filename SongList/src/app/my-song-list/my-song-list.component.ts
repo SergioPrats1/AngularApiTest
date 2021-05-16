@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import {MatTableModule} from '@angular/material/table'; 
+import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+import {MatTableModule} from '@angular/material/table';
 import { Song, ApiReaderService } from '../api-reader/api-reader.service';
 
 @Component({
@@ -15,24 +15,26 @@ export class MySongListComponent implements OnInit {
   error: any;
   song:Song;
   displayedColumns: string[] = ['title', 'artist', 'year'];
-  
+  @Output() onClose: EventEmitter<boolean>;
+
   constructor(private apiReaderService: ApiReaderService){
-	this.loading=false;
+	  this.loading=false;
     this.errorHttp=false;
-  }
-  
-  ngOnInit() {
-    this.loading = true;
-	this.showSongs();
-	this.loading = false;
-	this.songs = [];
+    this.onClose = new EventEmitter();
   }
 
-  showSongs() { 
+  ngOnInit() {
+    this.loading = true;
+	  this.showSongs();
+	  this.loading = false;
+	  this.songs = [];
+  }
+
+  showSongs() {
 	this.apiReaderService.getSongs()
-		.subscribe((data : Song[]) => { this.songs = data; console.log(data); 
+		.subscribe((data : Song[]) => { this.songs = data; console.log(data);
 											this.loading = false; },
-					error => this.error = error	  );		
+					error => this.error = error	  );
   }
 
 
@@ -46,7 +48,12 @@ export class MySongListComponent implements OnInit {
 	  }
 	  else {
 		  return "#0000ff";
-	  }      		  
+	  }
+  }
+
+  closeList(){
+    console.log("closeList() was called");
+    this.onClose.emit(true);
   }
 
 }

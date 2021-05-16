@@ -10,11 +10,22 @@ import { Component, OnInit } from '@angular/core';
 
 export class AppComponent implements OnInit {
 
+  showSongList: Boolean;
+
   constructor(){
-	  
+	  this.showSongList = false;
   }
 
-  ngOnInit() {
+  ngOnInit(){
+  }
+
+  loadSongList() {
+    this.showSongList = true;
+  }
+
+  listClosed(isClosed) {
+    console.log("listClosed() was called");
+    this.showSongList = false;
   }
 
 }
