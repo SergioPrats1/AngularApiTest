@@ -23,6 +23,7 @@ export class AppComponent implements OnInit {
     this.showSongList = true;
   }
 
+
   listClosed(isClosed) {
     console.log("listClosed() was called");
     this.showSongList = false;

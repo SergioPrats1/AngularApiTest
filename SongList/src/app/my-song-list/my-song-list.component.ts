@@ -11,6 +11,7 @@ export class MySongListComponent implements OnInit {
   title = 'SongList';
   songs:Array<Song>;
   loading:Boolean;
+  showAddSong:Boolean;
   errorHttp: Boolean;
   error: any;
   song:Song;
@@ -18,9 +19,10 @@ export class MySongListComponent implements OnInit {
   @Output() onClose: EventEmitter<boolean>;
 
   constructor(private apiReaderService: ApiReaderService){
-	  this.loading=false;
-    this.errorHttp=false;
+	this.loading = false;
+    this.errorHttp = false;
     this.onClose = new EventEmitter();
+	this.showAddSong = false;
   }
 
   ngOnInit() {
@@ -55,5 +57,13 @@ export class MySongListComponent implements OnInit {
     console.log("closeList() was called");
     this.onClose.emit(true);
   }
-
+  
+  loadAddSong() {
+	this.showAddSong = true;
+  }
+  
+  AddSongClosed(isClosed) {
+    console.log("listClosed() was called");
+    this.showAddSong = false;
+  }
 }
