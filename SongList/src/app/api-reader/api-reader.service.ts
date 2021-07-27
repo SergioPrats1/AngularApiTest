@@ -51,17 +51,15 @@ export class ApiReaderService {
  
   addSong(newSong: NewSong) {
 	  
-  /*let headerOptions = {
+  let headerOptions = {
 				headers: {
 					'Content-Type': 'application/json',
 					'Access-Control-Allow-Origin': '*',
 				},
 				method: 'POST',
 				mode: '*'
-			};  	  */
-	console.log(newSong.artist);
-	console.log(newSong.title);
-    //return this.http.post<NewSong>(this.addUrl, newSong, headerOptions)    
+			};  	  
+  
 	return this.http.post<NewSong>(this.addUrl, JSON.stringify(newSong))    
 	  .pipe(catchError(this.handleError));
   } 
