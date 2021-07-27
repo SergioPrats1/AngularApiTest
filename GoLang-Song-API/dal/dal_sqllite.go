@@ -62,11 +62,13 @@ func AddSong(s data_model.AddSong) {
 	db, err := sql.Open(confi.DataBaseType, confi.DataBasePath)
 	checkErr(err)
 
-	year, _ := strconv.Atoi(s.Year)
+	var year int
+	if s.Year != "" {
+		year, _ = strconv.Atoi(s.Year)
+	} 
 
-	query := fmt.Sprintf("INSERT INTO song (Title, Artist, Year) Values ('%s', '%s', %d)", s.Title, s.Artist,year)
+	query := fmt.Sprintf("INSERT INTO song (Title, Artist, Year) Values ('%s', '%s', %d)", s.Title, s.Artist, year)
 
-	//fmt.Printf("query: %s \n", query)
 	_, err = db.Exec(query)
 	checkErr(err)
 

@@ -48,12 +48,21 @@ func (a *api) addSong(w http.ResponseWriter, r *http.Request) {
 		panic ("Songs cannot be added to database if the Artist or Title fields are empty!")
 	}
 
-	if _, err := strconv.Atoi(songToAdd.Year); err != nil {
-		panic("The song's year is not a number")
+	if songToAdd.Year != "" {
+		if  _, err := strconv.Atoi(songToAdd.Year); err != nil {
+			panic("The song's year is not a number")
+		}
 	}
 
 	dal.AddSong(songToAdd)
 
+	enableCors(&w)
+
+	//w.Header().Set("Content-Type", "text/html")
+	//w.Write( []byte("The song " + songToAdd.Artist + " has been added") )
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode("The song " + songToAdd.Artist + " has been added")
 }
 
 func (a *api) Router() http.Handler {
