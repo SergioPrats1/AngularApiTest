@@ -5,7 +5,8 @@ import { NewSong, ApiReaderService } from '../api-reader/api-reader.service';
 @Component({
   selector: 'app-add-song',
   templateUrl: './add-song.component.html',
-  styleUrls: ['./add-song.component.css']
+  styleUrls: ['./add-song.component.css'],
+  providers: [FormBuilder]
 })
 export class AddSongComponent implements OnInit {
   form: FormGroup;

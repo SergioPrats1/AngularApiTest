@@ -11,9 +11,11 @@ import { Component, OnInit } from '@angular/core';
 export class AppComponent implements OnInit {
 
   showSongList: Boolean;
+  title: string;
 
   constructor(){
 	  this.showSongList = false;
+	  this.title="SongList";
   }
 
   ngOnInit(){

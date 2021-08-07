@@ -18,13 +18,12 @@ import { ReactiveFormsModule } from '@angular/forms';
   imports: [
     BrowserModule,
     AppRoutingModule,
-	HttpClientModule,
-	BrowserAnimationsModule,
-	MatTableModule,
-	ReactiveFormsModule
-	
+	  HttpClientModule,
+	  BrowserAnimationsModule,
+	  MatTableModule,
+	  ReactiveFormsModule
   ],
-  providers: [],
+  providers: [HttpClientModule],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
