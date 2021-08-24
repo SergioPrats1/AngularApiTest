@@ -75,10 +75,34 @@ func AddSong(s data_model.AddSong) {
 	db.Close()
 }
 
+func DeleteSong(id string) bool {
+
+	db, err := sql.Open(confi.DataBaseType, confi.DataBasePath)
+	checkErr(err)
+
+	query := fmt.Sprintf("DELETE FROM song WHERE ID = %s", id)
+
+	//res, err := db.Exec("DELETE FROM song WHERE ID=$1", id)
+	res, err := db.Exec(query)
+	checkErr(err)
+
+	count, err := res.RowsAffected() 
+	checkErr(err)
+
+	db.Close()
+
+	if count > 0 {
+		return true
+	} else {
+		return false
+	}
+}
+
+
 
 func checkErr(err error) {
 	if err != nil {
-		println("There has been an error in the dal")
+		println("There has been an error in the Data Access Layer")
 		panic(err)
 	}
 }

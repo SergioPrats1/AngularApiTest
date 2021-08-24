@@ -24,13 +24,34 @@ func New() Server {
 
 	r := mux.NewRouter()
 	r.HandleFunc("/getSongs", a.fetchSongs).Methods(http.MethodGet, http.MethodOptions)
-	r.HandleFunc("/getSongs/{ID:[a-zA-Z0-9_]+}", a.fetchSong).Methods(http.MethodGet, http.MethodOptions)
+	r.HandleFunc("/getSong/{ID:[a-zA-Z0-9_]+}", a.fetchSong).Methods(http.MethodGet, http.MethodOptions)
 
 	r.HandleFunc("/addSong", a.addSong).Methods(http.MethodPost, http.MethodOptions)
+	r.HandleFunc("/deleteSong/{ID:[a-zA-Z0-9_]+}", a.deleteSong).Methods(http.MethodGet, http.MethodOptions)
+
+	r.HandleFunc("/retrieveParameterTest", a.retrieveParameterTest).Methods(http.MethodGet, http.MethodOptions)
 
 	a.router = r
 	return a
 }
+
+func (a *api) deleteSong(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["ID"]
+
+	result := dal.DeleteSong(id)
+
+	enableCors(&w)
+
+	w.Header().Set("Content-Type", "application/json")
+	if result {
+		json.NewEncoder(w).Encode("The song whose id is " + id + " has been deleted added")
+	} else {
+		json.NewEncoder(w).Encode("The song whose id is " + id + " has not been found")
+	}
+
+}
+
 
 func (a *api) addSong(w http.ResponseWriter, r *http.Request) {
 
@@ -92,6 +113,26 @@ func (a *api) fetchSong(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(song)
 }
+
+func (a *api) retrieveParameterTest(w http.ResponseWriter, r *http.Request) {
+	
+	keys, ok := r.URL.Query()["key"]
+
+	if !ok || len(keys[0]) < 1 {
+        panic("Url Param 'key' is missing")
+    }
+
+    // Query()["key"] will return an array of items, 
+    // we only want the single item.
+    key := keys[0]
+
+	enableCors(&w)
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode("The key that was passed is: " + key)
+}
+
+
 
 func enableCors(w *http.ResponseWriter) {
 	(*w).Header().Set("Access-Control-Allow-Origin", "*")

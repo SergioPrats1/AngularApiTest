@@ -29,6 +29,7 @@ export class ApiReaderService {
   // Golang API
   getUrl = 'http://localhost:8080/getSongs';
   addUrl = 'http://localhost:8080/addSong';
+  delUrl = 'http://localhost:8080/deleteSong/'
   //configUrl = 'assets/Songs.json';
   
   
@@ -50,21 +51,29 @@ export class ApiReaderService {
   }  
  
   addSong(newSong: NewSong) {
-	  
-  let headerOptions = {
-				headers: {
-					'Content-Type': 'application/json',
-					'Access-Control-Allow-Origin': '*',
-				},
-				method: 'POST',
-				mode: '*'
-			};  	  
-  
-	return this.http.post<NewSong>(this.addUrl, JSON.stringify(newSong))    
-	  .pipe(catchError(this.handleError));
+	  return this.http.post<NewSong>(this.addUrl, JSON.stringify(newSong))    
+	    .pipe(catchError(this.handleError));
   } 
  
-   private handleError(error: HttpErrorResponse) {
+  deleteSong(id: number) {
+    let options = {
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+          },
+          method: 'GET',
+          mode: '*'
+        };  	  
+    
+    let url = this.delUrl + id.toString();
+
+    console.log(url);
+
+    return this.http.get<NewSong>(url, options)    
+      .pipe(catchError(this.handleError));
+    } 
+
+  private handleError(error: HttpErrorResponse) {
     console.error(error.message);
     return throwError('A data error occurred, please try again.');
   }
