@@ -21,17 +21,26 @@ export interface NewSong {
 })
 export class ApiReaderService {
 
-  constructor(private http: HttpClient) { }
-  
   // C# API (legacy)
   //getUrl = 'http://localhost:5000/api/songs';	  
   
-  // Golang API
-  getUrl = 'http://localhost:8080/getSongs';
-  addUrl = 'http://localhost:8080/addSong';
-  delUrl = 'http://localhost:8080/deleteSong/'
+  //ip = 'localhost';
+  ip = '192.168.1.110';
+  port = "8080";
+  getUrl: string;
+  addUrl: string;
+  delUrl: string;
+
+  constructor(private http: HttpClient) { 
+    // Golang API
+    let baseUrl = "http://" + this.ip + ":" + this.port;
+
+    this.getUrl = baseUrl + "/getSongs";
+    this.addUrl = baseUrl + "/addSong";
+    this.delUrl = baseUrl + "/deleteSong";
+  }
+ 
   //configUrl = 'assets/Songs.json';
-  
   
   getSongs() {   
   
