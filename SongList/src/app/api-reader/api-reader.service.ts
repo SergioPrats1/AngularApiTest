@@ -74,7 +74,7 @@ export class ApiReaderService {
           mode: '*'
         };  	  
     
-    let url = this.delUrl + id.toString();
+    let url = this.delUrl + '/' + id.toString();
 
     console.log(url);
 

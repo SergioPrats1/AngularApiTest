@@ -1,3 +1,5 @@
+import { RouterModule , Routes } from '@angular/router';
+
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
@@ -8,14 +10,32 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatTableModule} from '@angular/material/table';
 import { AddSongComponent } from './add-song/add-song.component'; 
 import { ReactiveFormsModule } from '@angular/forms';
+import { Error404Component } from './error404/error404.component';
+import { UserLoginComponent } from './user-login/user-login.component';
+import { HomePageComponent } from './home-page/home-page.component';
+
+
+const rutasApp:Routes = [
+  { path:'song-list' , component: MySongListComponent },
+  { path:'add-song' , component: AddSongComponent },
+  { path:'user-login' , component: UserLoginComponent },
+  { path:'details' , redirectTo: 'song-list' },
+  { path:'404' , component: Error404Component },
+  { path:'' , component: HomePageComponent , pathMatch: 'full' },  
+  { path:'**' , redirectTo: '404' }
+]
 
 @NgModule({
   declarations: [
     AppComponent,
     MySongListComponent,
-    AddSongComponent
+    AddSongComponent,
+    Error404Component,
+    UserLoginComponent,
+    HomePageComponent
   ],
   imports: [
+    RouterModule.forRoot(rutasApp),    
     BrowserModule,
     AppRoutingModule,
 	  HttpClientModule,

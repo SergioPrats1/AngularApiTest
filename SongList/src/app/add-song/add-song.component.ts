@@ -1,6 +1,7 @@
 import { Component, OnInit, Inject, EventEmitter, Output } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { NewSong, ApiReaderService } from '../api-reader/api-reader.service';
+import { ApiReaderService } from '../api-reader/api-reader.service';
+import { Router} from '@angular/router';
 
 @Component({
   selector: 'app-add-song',
@@ -13,7 +14,7 @@ export class AddSongComponent implements OnInit {
   @Output() onClose: EventEmitter<boolean>;
 
   constructor( private formBuilder: FormBuilder, 
-				private apiReaderService: ApiReaderService) {
+				private apiReaderService: ApiReaderService, private readonly router: Router) {
 		this.onClose = new EventEmitter();					
 	}
 
@@ -49,12 +50,8 @@ export class AddSongComponent implements OnInit {
   onSubmit(newSong) {
     this.apiReaderService.addSong(newSong)
 	      .subscribe(() => {    console.log("event to close the add form emitted ");
-								this.onClose.emit(true);
-      });
-	  
-		  //.subscribe(() => {
-	      //  this.router.navigate(['/', mediaItem.medium]); });	  
-	  
+        this.router.navigate(['song-list']) /*this.onClose.emit(true)*/;
+      });	  
   }
 
 }

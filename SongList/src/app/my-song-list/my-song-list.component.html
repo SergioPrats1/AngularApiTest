@@ -1,4 +1,4 @@
-<DIV *ngIf="!showAddSong">
+<DIV>
 	<H1>Here is the Song list</H1>
 	<p *ngIf="loading;">Loading: {{loading}}</p>
 	<p *ngIf="errorHttp; " [ngStyle]="{'color': errorHttpColor() }">errorHttp: {{errorHttp}}</p>
@@ -29,6 +29,8 @@
 	</table>
 </DIV>
 <BR />
-<button *ngIf="!showAddSong" (click)="loadAddSong();">Add a new song</button>
+<button (click)="loadAddSong();">Add a new song</button>
 <button (click)="closeList()">Close</button>
-<app-add-song *ngIf="showAddSong" (onClose)="AddSongClosed($event)"></app-add-song>
+
+<!-- <button *ngIf="!showAddSong" (click)="loadAddSong();">Add a new song</button> -->
+<!--<app-add-song *ngIf="showAddSong" (onClose)="AddSongClosed($event)"></app-add-song> -->
