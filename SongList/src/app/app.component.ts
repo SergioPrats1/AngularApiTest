@@ -1,10 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-
-export class User {
-  UserName: string;
-  Password: string;
-  email: string;
-}
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -14,7 +9,7 @@ export class User {
 
 export class AppComponent implements OnInit {
 
-  constructor(){
+  constructor(private readonly router: Router){
   }
 
   ngOnInit(){

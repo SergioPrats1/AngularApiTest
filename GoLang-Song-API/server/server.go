@@ -1,14 +1,15 @@
 package server
 
 import (
+	"api/golang-song-api/dal"
+	"api/golang-song-api/data_model"
 	"encoding/json"
-	"net/http"
 	"fmt"
 	"io/ioutil"
+	"net/http"
 	"strconv"
+
 	"github.com/gorilla/mux"
-	"api/golang-song-api/data_model"
-	"api/golang-song-api/dal"
 )
 
 type api struct {
@@ -30,6 +31,8 @@ func New() Server {
 	r.HandleFunc("/deleteSong/{ID:[a-zA-Z0-9_]+}", a.deleteSong).Methods(http.MethodGet, http.MethodOptions)
 
 	r.HandleFunc("/retrieveParameterTest", a.retrieveParameterTest).Methods(http.MethodGet, http.MethodOptions)
+
+	r.HandleFunc("/users/authenticate", a.userAuthenticate).Methods(http.MethodPost, http.MethodOptions)
 
 	a.router = r
 	return a
@@ -98,6 +101,40 @@ func (a *api) fetchSongs(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(songList)
+}
+
+func (a *api) userAuthenticate(w http.ResponseWriter, r *http.Request) {
+
+	// This needs to be called before decoding the payload!
+	enableCors(&w)
+
+	if (r.Method == http.MethodOptions) {
+		return;
+	}
+
+	//println("userAuthenticate was called.")
+
+	var u data_model.UserPassword;
+
+	err := json.NewDecoder(r.Body).Decode(&u)
+
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusBadRequest)
+        return
+    }
+
+	var user data_model.User
+
+	user = dal.UserAuthenticate(u.UserName, u.Password);
+
+	if user == (data_model.User{}) {
+        http.Error(w, "Authentication failed for user " + u.UserName, http.StatusBadRequest)
+        return
+    }
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(user)
+
 }
 
 func (a *api) fetchSong(w http.ResponseWriter, r *http.Request) {

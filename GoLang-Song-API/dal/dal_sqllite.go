@@ -98,11 +98,63 @@ func DeleteSong(id string) bool {
 	}
 }
 
+func UserAuthenticate( userName string, password string) data_model.User {
+
+	var u data_model.User 
+	var token sql.NullString
+	var tokenExpires sql.NullTime
+	
+	db, err := sql.Open(confi.DataBaseType, confi.DataBasePath)
+	checkErr(err)
+
+	query := fmt.Sprintf("SELECT UserName, FirstName, LastName, Email, IsAdmin, Token, TokenExpires FROM Users WHERE UserName = '%s' AND Password = '%s'", userName, password);
+	println(query)
+
+	rows, err := db.Query(query)
+	
+	// Let the server send the error to the user
+	if err != nil {
+		checkErrNice(err)
+		return u
+	}	
+
+	for rows.Next() {
+		println("found some rows for the user")
+		err = rows.Scan(&u.UserName, &u.FirstName, &u.LastName, &u.Email, &u.IsAdmin, &token, &tokenExpires)
+
+		if token.Valid {
+			u.Token = token.String
+		}
+
+		if tokenExpires.Valid {
+			u.TokenExpires = tokenExpires.Time
+		}
+
+		checkErr(err)
+		break
+	}
+
+	rows.Close()
+	db.Close()
+
+	if (u.UserName == "") {
+		println("Authentication for user " + userName + " has failed.")
+	}
+
+	return u	
+
+}
 
 
 func checkErr(err error) {
 	if err != nil {
 		println("There has been an error in the Data Access Layer")
 		panic(err)
+	}
+}
+
+func checkErrNice(err error) {
+	if err != nil {
+		println("There has been a \"nice\" error in the Data Access Layer " + err.Error())
 	}
 }

@@ -23,6 +23,11 @@
 
 <div class="content">
 	<span>SongList app is running!</span>
+	<br/>
+	<br/>
+	<button *ngIf="!UserIsLogged" (click)="login();" style="font-size: 18px;">Login</button>
+	<br/>
+	<br/>
 </div>
 
 <div class="toolbar" role="banner">
@@ -35,4 +40,11 @@
   <BR />
   <button (click)="loadSongList();">Show the song list</button>
 
+</div>
+
+<!-- credits -->
+<div class="text-center">
+    <p>
+        <a href="https://github.com/SergioPrats1/AngularApiTest.html">Angular 8 - Song List</a>
+    </p>
 </div>

@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { throwError } from "rxjs";
+import { environment } from '../../environments/environment';
 
 export interface Song {
   id: number;
@@ -25,15 +26,17 @@ export class ApiReaderService {
   //getUrl = 'http://localhost:5000/api/songs';	  
   
   //ip = 'localhost';
-  ip = '192.168.1.110';
-  port = "8080";
+  //ip = '192.168.1.110';
+  //port = "8080";
   getUrl: string;
   addUrl: string;
   delUrl: string;
 
+
   constructor(private http: HttpClient) { 
     // Golang API
-    let baseUrl = "http://" + this.ip + ":" + this.port;
+    //let baseUrl = "http://" + this.ip + ":" + this.port;
+    let baseUrl = environment.apiEndPoint;
 
     this.getUrl = baseUrl + "/getSongs";
     this.addUrl = baseUrl + "/addSong";

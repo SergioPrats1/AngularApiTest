@@ -1,5 +1,5 @@
 import { Component, OnInit, EventEmitter, Output } from '@angular/core';
-import { Router} from '@angular/router';
+import { Router } from '@angular/router';
 import { Song, ApiReaderService } from '../api-reader/api-reader.service';
 
 @Component({
