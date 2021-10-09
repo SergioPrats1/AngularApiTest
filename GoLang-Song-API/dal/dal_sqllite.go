@@ -3,6 +3,7 @@ package dal
 import (
 	"api/golang-song-api/confi"
 	"api/golang-song-api/data_model"
+	"api/golang-song-api/helpers"
 	"database/sql"
 	"fmt"
 	"strconv"
@@ -12,16 +13,26 @@ import (
 func GetAllSongs() []data_model.Song {
 	var songs []data_model.Song
 	var s data_model.Song
+	var comments sql.NullString
+	var createdBy sql.NullString
 	
 	db, err := sql.Open(confi.DataBaseType, confi.DataBasePath)
 	checkErr(err)
 
-	rows, err := db.Query("SELECT * FROM song")
+	rows, err := db.Query("SELECT Id, Title, Artist, Year, Comments, CreatedBy FROM song")
 	checkErr(err)
 
 	for rows.Next() {
-		err = rows.Scan(&s.Id, &s.Title, &s.Artist, &s.Year)
+		err = rows.Scan(&s.Id, &s.Title, &s.Artist, &s.Year, &comments, &createdBy)
 		checkErr(err)
+
+		if comments.Valid {
+			s.Comments = comments.String
+		}
+		if createdBy.Valid {
+			s.CreatedBy = createdBy.String
+		}
+
 		songs = append(songs, s)
 	}
 
@@ -101,14 +112,13 @@ func DeleteSong(id string) bool {
 func UserAuthenticate( userName string, password string) data_model.User {
 
 	var u data_model.User 
-	var token sql.NullString
-	var tokenExpires sql.NullTime
-	
+	found := false
+
 	db, err := sql.Open(confi.DataBaseType, confi.DataBasePath)
 	checkErr(err)
 
-	query := fmt.Sprintf("SELECT UserName, FirstName, LastName, Email, IsAdmin, Token, TokenExpires FROM Users WHERE UserName = '%s' AND Password = '%s'", userName, password);
-	println(query)
+	query := fmt.Sprintf("SELECT UserName, FirstName, LastName, Email, IsAdmin FROM Users WHERE UserName = '%s' AND Password = '%s'", userName, password);
+	println(query + "\n")
 
 	rows, err := db.Query(query)
 	
@@ -120,31 +130,47 @@ func UserAuthenticate( userName string, password string) data_model.User {
 
 	for rows.Next() {
 		println("found some rows for the user")
-		err = rows.Scan(&u.UserName, &u.FirstName, &u.LastName, &u.Email, &u.IsAdmin, &token, &tokenExpires)
+		err = rows.Scan(&u.UserName, &u.FirstName, &u.LastName, &u.Email, &u.IsAdmin)
 
-		if token.Valid {
-			u.Token = token.String
-		}
+		checkErrDb(err, db)
 
-		if tokenExpires.Valid {
-			u.TokenExpires = tokenExpires.Time
-		}
+		token := helpers.GenerateSecureToken()
+		tokenExpires := helpers.GetNewTokenExpirationDate()
 
-		checkErr(err)
+		u.Token = token
+		u.TokenExpires = tokenExpires
+
+		found = true
 		break
 	}
 
 	rows.Close()
 	db.Close()
-
-	if (u.UserName == "") {
+	
+	if (!found) {
 		println("Authentication for user " + userName + " has failed.")
+	} else {
+		UpdateTokenForUser(u)
 	}
 
 	return u	
-
 }
 
+func UpdateTokenForUser(u data_model.User) {
+	db, err := sql.Open(confi.DataBaseType, confi.DataBasePath)
+	checkErr(err)
+
+	query := fmt.Sprintf("UPDATE Users SET Token = '%s', TokenExpires = '%s' WHERE  UserName = '%s'", u.Token, u.TokenExpires.Format("01-02-2006 15:04:05"), u.UserName )
+	println(query + "\n")
+	_, err = db.Exec(query)
+	db.Close()
+	checkErrNice(err)		
+}
+
+func checkErrDb(err error, db *sql.DB) {
+	db.Close()
+	checkErr(err)
+}
 
 func checkErr(err error) {
 	if err != nil {

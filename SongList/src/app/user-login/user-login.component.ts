@@ -61,7 +61,7 @@ export class UserLoginComponent implements OnInit {
           .subscribe(
               data => {
                 this.user =  <User>(JSON.parse(localStorage.getItem('currentUser')));
-                console.log(this.user.email);
+                console.log(this.user.token);
                 alert ("Hello " + this.user.firstname + " " + this.user.lastname);
                   this.router.navigate([this.returnUrl]);
               },
