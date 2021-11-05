@@ -22,7 +22,11 @@
         and 
         {{yearErrors.year.max}}
       </div>	  
-	</li>	
+	</li>
+	<li>
+	  <label for="artist">Comments:  </label>	
+	  <textarea name= "comments" id="comments" rows="4" cols="50" formControlName="comments" ></textarea>
+	</li>
   </ul>	 
   
   <button type="submit" [disabled]="!form.valid">Save</button>

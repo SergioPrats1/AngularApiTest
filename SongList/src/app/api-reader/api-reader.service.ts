@@ -3,18 +3,21 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { throwError } from "rxjs";
 import { environment } from '../../environments/environment';
+import { AuthenticationService } from '../services';
 
 export interface Song {
   id: number;
   title: string;
   artist: string;
   year: number;
+  comments: string;
 }
 
 export interface NewSong {
   title: string;
   artist: string;
   year: number;
+  comments: string;
 }
 
 @Injectable({
@@ -33,7 +36,7 @@ export class ApiReaderService {
   delUrl: string;
 
 
-  constructor(private http: HttpClient) { 
+  constructor(private http: HttpClient, private authenticationService: AuthenticationService) { 
     // Golang API
     //let baseUrl = "http://" + this.ip + ":" + this.port;
     let baseUrl = environment.apiEndPoint;
@@ -47,10 +50,11 @@ export class ApiReaderService {
   
   getSongs() {   
   
-  let options = {
+    let options = {
 				headers: {
 					'Content-Type': 'application/json',
 					'Access-Control-Allow-Origin': '*',
+          'Authorization': this.authenticationService.token,
 				},
 				method: 'GET', 
 				mode: '*' 
@@ -60,10 +64,20 @@ export class ApiReaderService {
 	  .pipe(
         catchError(this.handleError)
 	  );
+
+    //return this.http.get(this.getUrl);
+
   }  
  
   addSong(newSong: NewSong) {
-	  return this.http.post<NewSong>(this.addUrl, JSON.stringify(newSong))    
+
+    let options = {
+      headers: {
+        'Authorization': this.authenticationService.token,
+      }
+    };  
+
+	  return this.http.post<NewSong>(this.addUrl, JSON.stringify(newSong), options)    
 	    .pipe(catchError(this.handleError));
   } 
  
@@ -72,6 +86,7 @@ export class ApiReaderService {
           headers: {
             'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*',
+            'Authorization': this.authenticationService.token,
           },
           method: 'GET',
           mode: '*'

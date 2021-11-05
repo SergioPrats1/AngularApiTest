@@ -7,44 +7,45 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
-
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    margin: 8px 0;
-  }
-
-
+  
+  div.content{
+    width: 50%;
+	margin: 0 auto;
+  }​  
 
 </style>
 
-<div class="content">
-	<span>SongList app is running!</span>
-	<br/>
-	<br/>
-	<button *ngIf="!UserIsLogged" (click)="login();" style="font-size: 18px;">Login</button>
-	<br/>
-	<br/>
-</div>
-
-<div class="toolbar" role="banner">
-
+<div class="content" role="banner">
+  <h2>SongList app is running!</h2>
   <img
     width="40"
     alt="Angular Logo"
     src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg=="
   />
-  <BR />
-  <button (click)="loadSongList();">Show the song list</button>
+</div>
 
+<div class="content">
+
+	<br/>
+	<button *ngIf="!UserIsLogged" (click)="login();" style="font-size: 18px;">Login</button>
+	<button *ngIf="UserIsLogged" (click)="logout();" style="font-size: 18px;">Logout</button>
+	<br/>
+	<br/>
+</div>
+
+<div class="content">
+	  <button (click)="loadSongList();">Show the song list</button>
 </div>
 
 <!-- credits -->
-<div class="text-center">
-    <p>
-        <a href="https://github.com/SergioPrats1/AngularApiTest.html">Angular 8 - Song List</a>
+<div class="content">
+    <br/>
+	<br/>
+	<br/>
+	<br/>
+	<br/>
+	<br/>
+	<p>
+        <a href="https://github.com/SergioPrats1/AngularApiTest">Angular 8 - Song List</a>
     </p>
 </div>

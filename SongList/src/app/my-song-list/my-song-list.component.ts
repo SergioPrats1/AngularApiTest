@@ -14,7 +14,7 @@ export class MySongListComponent implements OnInit {
   errorHttp: Boolean;
   error: any;
   song:Song;
-  displayedColumns: string[] = ['title', 'artist', 'year', 'delete'];
+  displayedColumns: string[] = ['title', 'artist', 'year', "comments", 'delete'];
   @Output() onClose: EventEmitter<boolean>;
 
   constructor(private apiReaderService: ApiReaderService, private readonly router: Router){
@@ -32,7 +32,15 @@ export class MySongListComponent implements OnInit {
 
   showSongs() {
 	this.apiReaderService.getSongs()
-		.subscribe((data : Song[]) => { this.songs = data; console.log(data);
+		.subscribe((data : Song[]) => { 
+                      this.songs = data; 
+                      /*console.log("Hello");
+                      for( let i = 0; i < this.songs.length; i++ ) {
+                        if (this.songs[i].comments == null ) {
+                          console.log("null was changed");
+                          this.songs[i].comments = "";
+                        }
+                      }*/                     
 											this.loading = false; },
 					error => this.error = error	  );
   }
@@ -64,7 +72,6 @@ export class MySongListComponent implements OnInit {
   }
   
   AddSongClosed(isClosed) {
-    console.log("listClosed() was called");
     this.showSongs();
   }
 

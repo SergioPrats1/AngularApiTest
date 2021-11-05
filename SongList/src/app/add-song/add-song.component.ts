@@ -22,8 +22,9 @@ export class AddSongComponent implements OnInit {
     this.form = this.formBuilder.group({ 
 		  title: this.formBuilder.control('', Validators.compose([
 		    Validators.required, Validators.pattern('[\\w\\-\\s\\/]+')]) ),
-	      artist: this.formBuilder.control('', Validators.required),			
-		  year: this.formBuilder.control('', this.yearValidator)
+	    artist: this.formBuilder.control('', Validators.required),			
+		  year: this.formBuilder.control('', this.yearValidator),
+      comments: this.formBuilder.control('')
     });	  
   }
   

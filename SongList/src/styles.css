@@ -23,3 +23,11 @@ button.btn {
 div.form-group {
 	margin-top: 10px;
 }
+
+td.mat-row {
+  height: auto;
+}
+
+td.mat-cell {
+  padding: 4px 4px 4px 0;
+}

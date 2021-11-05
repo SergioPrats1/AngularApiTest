@@ -32,6 +32,9 @@ export class UserLoginComponent implements OnInit {
         this.user =  <User>(JSON.parse(localStorage.getItem('currentUser')));
         console.log("Hi " + this.user.firstname)
       }
+      else {
+        this.user = new User();
+      }
   }
 
   ngOnInit() {
@@ -61,7 +64,7 @@ export class UserLoginComponent implements OnInit {
           .subscribe(
               data => {
                 this.user =  <User>(JSON.parse(localStorage.getItem('currentUser')));
-                console.log(this.user.token);
+                console.log("TOKEN retrieved from localStorage: " + this.user.token);
                 alert ("Hello " + this.user.firstname + " " + this.user.lastname);
                   this.router.navigate([this.returnUrl]);
               },

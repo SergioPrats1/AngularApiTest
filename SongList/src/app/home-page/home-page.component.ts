@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router} from '@angular/router';
+import { AuthenticationService } from '../services';
 
 @Component({
   selector: 'app-home-page',
@@ -13,11 +14,13 @@ export class HomePageComponent implements OnInit {
   UserIsLogged: boolean;
 
 
-  constructor(private readonly router: Router){
+  constructor(private readonly router: Router,
+              private authenticationService: AuthenticationService){
 	  this.title="SongList";
   }
 
   ngOnInit(): void {
+    this.UserIsLogged = this.authenticationService.isAuthenticated;
   }
 
   loadSongList() {
@@ -30,6 +33,11 @@ export class HomePageComponent implements OnInit {
 
   login() {
     this.router.navigate(['user-login']);
+  }  
+
+  logout() {
+    this.authenticationService.logout();
+    this.UserIsLogged = false;
   }  
 
 }

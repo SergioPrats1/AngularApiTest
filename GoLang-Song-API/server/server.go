@@ -3,12 +3,12 @@ package server
 import (
 	"api/golang-song-api/dal"
 	"api/golang-song-api/data_model"
+	"api/golang-song-api/token"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strconv"
-
 	"github.com/gorilla/mux"
 )
 
@@ -38,13 +38,31 @@ func New() Server {
 	return a
 }
 
+func (a *api) Router() http.Handler {
+	return a.router
+}
+
 func (a *api) deleteSong(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
+
+	data, err := token_manager.ValidateJwcToken(r)
+
+    if err != nil {
+        println(err)
+        http.Error(w, "Request failed!", http.StatusUnauthorized)
+		return
+    }
+
+	if data == nil {
+		return
+	}
+
+	userName := data.CustomClaims["userName"]
+
 	vars := mux.Vars(r)
 	id := vars["ID"]
 
-	result := dal.DeleteSong(id)
-
-	enableCors(&w)
+	result := dal.DeleteSong(id, userName)
 
 	w.Header().Set("Content-Type", "application/json")
 	if result {
@@ -52,12 +70,25 @@ func (a *api) deleteSong(w http.ResponseWriter, r *http.Request) {
 	} else {
 		json.NewEncoder(w).Encode("The song whose id is " + id + " has not been found")
 	}
-
 }
-
 
 func (a *api) addSong(w http.ResponseWriter, r *http.Request) {
 
+	enableCors(&w)
+
+	data, err := token_manager.ValidateJwcToken(r)
+
+    if err != nil {
+        println(err)
+        http.Error(w, "Request failed!", http.StatusUnauthorized)
+		return
+    }
+
+	if data == nil {
+		return
+	}
+
+	userName := data.CustomClaims["userName"]
 	var songToAdd data_model.AddSong
 	
 	body, err := ioutil.ReadAll(r.Body)
@@ -78,9 +109,9 @@ func (a *api) addSong(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	dal.AddSong(songToAdd)
+	songToAdd.CreatedBy = userName
 
-	enableCors(&w)
+	dal.AddSong(songToAdd)
 
 	//w.Header().Set("Content-Type", "text/html")
 	//w.Write( []byte("The song " + songToAdd.Artist + " has been added") )
@@ -89,18 +120,47 @@ func (a *api) addSong(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode("The song " + songToAdd.Artist + " has been added")
 }
 
-func (a *api) Router() http.Handler {
-	return a.router
-}
 
 func (a *api) fetchSongs(w http.ResponseWriter, r *http.Request) {
 	var songList []data_model.Song
-	songList = dal.GetAllSongs()
 
 	enableCors(&w)
 
+	//GetHeaders(r)
+
+	data, err := token_manager.ValidateJwcToken(r)
+
+    if err != nil {
+        println(err)
+        http.Error(w, "Request failed!", http.StatusUnauthorized)
+		return
+    }
+
+	if (data == nil) {
+		return
+	}
+
+    userName := data.CustomClaims["userName"]
+	
+	songList = dal.GetAllSongs(userName)
+
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(songList)
+}
+
+// This function is not called from the Angular App
+func (a *api) fetchSong(w http.ResponseWriter, r *http.Request) {
+	var song  data_model.Song
+	
+	enableCors(&w)
+
+	vars := mux.Vars(r)
+	id := vars["ID"]
+
+	song = dal.GetSong(id)
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(song)
 }
 
 func (a *api) userAuthenticate(w http.ResponseWriter, r *http.Request) {
@@ -111,8 +171,6 @@ func (a *api) userAuthenticate(w http.ResponseWriter, r *http.Request) {
 	if (r.Method == http.MethodOptions) {
 		return;
 	}
-
-	//println("userAuthenticate was called.")
 
 	var u data_model.UserPassword;
 
@@ -132,24 +190,12 @@ func (a *api) userAuthenticate(w http.ResponseWriter, r *http.Request) {
         return
     }
 
+	user.Token = token_manager.GeneratJwcToken(user.UserName)
+
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(user)
-
 }
 
-func (a *api) fetchSong(w http.ResponseWriter, r *http.Request) {
-	var song  data_model.Song
-	
-	vars := mux.Vars(r)
-	id := vars["ID"]
-
-	song = dal.GetSong(id)
-
-	enableCors(&w)
-
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(song)
-}
 
 func (a *api) retrieveParameterTest(w http.ResponseWriter, r *http.Request) {
 	
@@ -170,6 +216,14 @@ func (a *api) retrieveParameterTest(w http.ResponseWriter, r *http.Request) {
 }
 
 
+func GetHeaders(r *http.Request) {
+	for name, values := range r.Header {
+		// Loop over all values for the name.
+		for _, value := range values {
+			fmt.Println(name, " : ", value)
+		}
+	}
+}
 
 func enableCors(w *http.ResponseWriter) {
 	(*w).Header().Set("Access-Control-Allow-Origin", "*")
