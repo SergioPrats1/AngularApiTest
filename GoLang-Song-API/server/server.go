@@ -34,6 +34,8 @@ func New() Server {
 
 	r.HandleFunc("/users/authenticate", a.userAuthenticate).Methods(http.MethodPost, http.MethodOptions)
 
+	r.HandleFunc("/users/register", a.userRegister).Methods(http.MethodPost, http.MethodOptions)
+
 	a.router = r
 	return a
 }
@@ -43,7 +45,12 @@ func (a *api) Router() http.Handler {
 }
 
 func (a *api) deleteSong(w http.ResponseWriter, r *http.Request) {
+	
 	enableCors(&w)
+
+	if r.Method == http.MethodOptions {
+		return
+	}
 
 	data, err := token_manager.ValidateJwcToken(r)
 
@@ -52,10 +59,6 @@ func (a *api) deleteSong(w http.ResponseWriter, r *http.Request) {
         http.Error(w, "Request failed!", http.StatusUnauthorized)
 		return
     }
-
-	if data == nil {
-		return
-	}
 
 	userName := data.CustomClaims["userName"]
 
@@ -73,8 +76,12 @@ func (a *api) deleteSong(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *api) addSong(w http.ResponseWriter, r *http.Request) {
-
+	
 	enableCors(&w)
+
+	if r.Method == http.MethodOptions {
+		return
+	}
 
 	data, err := token_manager.ValidateJwcToken(r)
 
@@ -84,10 +91,6 @@ func (a *api) addSong(w http.ResponseWriter, r *http.Request) {
 		return
     }
 
-	if data == nil {
-		return
-	}
-
 	userName := data.CustomClaims["userName"]
 	var songToAdd data_model.AddSong
 	
@@ -95,7 +98,6 @@ func (a *api) addSong(w http.ResponseWriter, r *http.Request) {
 	err = json.Unmarshal(body, &songToAdd)
 
 	if err != nil {
-		fmt.Println("into a panic statement in server.addSong()")
 		panic(err)
 	}
 
@@ -123,8 +125,12 @@ func (a *api) addSong(w http.ResponseWriter, r *http.Request) {
 
 func (a *api) fetchSongs(w http.ResponseWriter, r *http.Request) {
 	var songList []data_model.Song
-
+	
 	enableCors(&w)
+	
+	if r.Method == http.MethodOptions {	
+		return
+	}
 
 	//GetHeaders(r)
 
@@ -135,10 +141,6 @@ func (a *api) fetchSongs(w http.ResponseWriter, r *http.Request) {
         http.Error(w, "Request failed!", http.StatusUnauthorized)
 		return
     }
-
-	if (data == nil) {
-		return
-	}
 
     userName := data.CustomClaims["userName"]
 	
@@ -161,39 +163,6 @@ func (a *api) fetchSong(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(song)
-}
-
-func (a *api) userAuthenticate(w http.ResponseWriter, r *http.Request) {
-
-	// This needs to be called before decoding the payload!
-	enableCors(&w)
-
-	if (r.Method == http.MethodOptions) {
-		return;
-	}
-
-	var u data_model.UserPassword;
-
-	err := json.NewDecoder(r.Body).Decode(&u)
-
-    if err != nil {
-        http.Error(w, err.Error(), http.StatusBadRequest)
-        return
-    }
-
-	var user data_model.User
-
-	user = dal.UserAuthenticate(u.UserName, u.Password);
-
-	if user == (data_model.User{}) {
-        http.Error(w, "Authentication failed for user " + u.UserName, http.StatusBadRequest)
-        return
-    }
-
-	user.Token = token_manager.GeneratJwcToken(user.UserName)
-
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(user)
 }
 
 

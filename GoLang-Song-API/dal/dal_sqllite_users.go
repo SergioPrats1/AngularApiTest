@@ -53,17 +53,13 @@ func UserAuthenticate( userName string, password string) data_model.User {
 	return u	
 }
 
-func getUserAdmin(userName string) (bool, error) {
+func getUserAdmin(userName string) bool {
 	var isAdmin bool
 	db, err := sql.Open(confi.DataBaseType, confi.DataBasePath)
 	checkErr(err)
 
-	rows, err := db.Query(fmt.Sprintf("SELECT isAdmin FROM User WHERE UserName ='%s'",userName))
+	rows, err := db.Query(fmt.Sprintf("SELECT isAdmin FROM User WHERE UserName ='%s'", userName))
 	checkErr(err)
-
-	if (err != nil) {
-		return false, err
-	}
 
 	for rows.Next() {
 		err = rows.Scan(&isAdmin)
@@ -73,7 +69,42 @@ func getUserAdmin(userName string) (bool, error) {
 	rows.Close()
 	db.Close()
 
-	return isAdmin, nil
+	return isAdmin
+}
+
+func CheckUserExists(userName string) bool {
+	db, err := sql.Open(confi.DataBaseType, confi.DataBasePath)
+	checkErr(err)
+
+	rows, err := db.Query(fmt.Sprintf("SELECT userName FROM User WHERE lower(UserName) = lower('%s')",userName))
+	checkErrDb(err, db)
+
+	found := false
+
+	for rows.Next() {
+		checkErrDb(err, db)
+		found = true
+	}
+
+	rows.Close()
+	db.Close()
+
+	return found
+}
+
+func AddUser(u data_model.User) {
+	db, err := sql.Open(confi.DataBaseType, confi.DataBasePath)
+	checkErr(err)
+
+	query := fmt.Sprintf("INSERT INTO User (UserName, Password, FirstName, LastName, Email, IsAdmin) Values ('%s', '%s', '%s', '%s', '%s', 0)",
+		u.UserName, u.Password, u.FirstName, u.LastName, u.Email)
+
+		println(query)
+
+	_, err = db.Exec(query)
+	checkErr(err)
+
+	db.Close()
 }
 
 /*func UpdateTokenForUser(u data_model.User) {

@@ -15,8 +15,7 @@ func GetAllSongs(userName string) []data_model.Song {
 	var comments sql.NullString
 	var createdBy sql.NullString
 	
-    isAdmin, err := getUserAdmin(userName)
-	checkErr(err)
+    isAdmin := getUserAdmin(userName)
 
 	db, err := sql.Open(confi.DataBaseType, confi.DataBasePath)
 	checkErr(err)
@@ -102,8 +101,7 @@ func AddSong(s data_model.AddSong) {
 
 func DeleteSong(id string, userName string) bool {
 
-    isAdmin, err := getUserAdmin(userName)
-	checkErr(err)
+    isAdmin := getUserAdmin(userName)
 
 	db, err := sql.Open(confi.DataBaseType, confi.DataBasePath)
 	checkErr(err)

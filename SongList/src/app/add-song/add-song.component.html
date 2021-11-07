@@ -6,15 +6,15 @@
   (ngSubmit)="onSubmit(form.value)">
   <ul>
     <li>
-	  <label for="title">Title:  </label>	
-	  <input type="text" name="title" id="title" formControlName="title">
+	  <label for="title">Title:   </label>	
+	  <input type="text" name="title" id="title" formControlName="title">  
 	</li>
     <li>
-	  <label for="artist">Artist:  </label>	
+	  <label for="artist">Artist:   </label>	
 	  <input type="text" name="artist" id="artist" formControlName="artist">
 	</li>
     <li>
-	  <label for="year">Year:   </label>	
+	  <label for="year">Year:      </label>	
 	  <input type="text" name="year" id="year" maxlength="4" formControlName="year">
       <div *ngIf="form.get('year').errors as yearErrors" class="error">
         Must be between 

@@ -3,7 +3,6 @@ import { RouterModule , Routes } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
-import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { MySongListComponent } from './my-song-list/my-song-list.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -13,6 +12,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { Error404Component } from './error404/error404.component';
 import { UserLoginComponent } from './user-login/user-login.component';
 import { HomePageComponent } from './home-page/home-page.component';
+import { UserRegisterComponent } from './user-register/user-register.component';
 
 
 const rutasApp:Routes = [
@@ -22,6 +22,7 @@ const rutasApp:Routes = [
   { path:'details' , redirectTo: 'song-list' },
   { path:'404' , component: Error404Component },
   { path:'' , component: HomePageComponent , pathMatch: 'full' },  
+  { path:'register' , component: UserRegisterComponent },
   { path:'**' , redirectTo: '404' }
 ]
 
@@ -32,12 +33,12 @@ const rutasApp:Routes = [
     AddSongComponent,
     Error404Component,
     UserLoginComponent,
-    HomePageComponent
+    HomePageComponent,
+    UserRegisterComponent
   ],
   imports: [
     RouterModule.forRoot(rutasApp),    
     BrowserModule,
-    AppRoutingModule,
 	  HttpClientModule,
 	  BrowserAnimationsModule,
 	  MatTableModule,

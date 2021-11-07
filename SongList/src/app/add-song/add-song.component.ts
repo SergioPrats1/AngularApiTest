@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ApiReaderService } from '../api-reader/api-reader.service';
 import { Router} from '@angular/router';
@@ -46,6 +46,7 @@ export class AddSongComponent implements OnInit {
       };
     }
   }
+  get f() { return this.form.controls; }
   
   
   onSubmit(newSong) {
